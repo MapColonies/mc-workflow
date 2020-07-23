@@ -1,0 +1,9 @@
+{
+    "server": {
+        "port": 3009
+    },
+    "fileSystem": {
+        "workflowsPath": "./workflows"
+    }
+
+}

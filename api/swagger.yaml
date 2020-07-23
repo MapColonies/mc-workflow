@@ -1,0 +1,192 @@
+swagger: "2.0"
+info:
+  description: "api  for stratego service"
+  version: "1.0.0"
+  title: "Stratego"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "cl_shlomikoncha@rnd-hub.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost:3009"
+basePath: "/api/v1"
+schemes:
+  - "http"
+paths:
+  /workflows:
+    get:
+      tags:
+        - "workflows"
+      summary: "get workflows"
+      operationId: "workflowsGET"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "get workflows"
+      x-swagger-router-controller: "Workflows"
+    post:
+      tags:
+        - "workflows"
+      summary: "create workflow"
+      operationId: "workflowsPOST"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "create new workflow based on json schema"
+          required: true
+          schema:
+            $ref: "#/definitions/Workflow"
+      responses:
+        201:
+          description: "Created"
+        400:
+          description: "Invalid input"
+        500:
+          description: "Internal error"
+      x-swagger-router-controller: "Workflows"
+  /workflows/{workflowName}:
+    delete:
+      tags:
+        - "workflows"
+      summary: "delete workflow by name"
+      operationId: "workflowsDELETE"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "workflowName"
+          in: "path"
+          description: "workflow to delete"
+          required: true
+          type: "string"
+      responses:
+        202:
+          description: "No-content"
+        500:
+          description: "Internal error"
+      x-swagger-router-controller: "Workflows"
+  /ingest:
+    post:
+      tags:
+        - "ingest files"
+      summary: "post files by workflow"
+      operationId: "ingestPOST"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "create new workflow based on json schema"
+          required: true
+          schema:
+            $ref: "#/definitions/Ingest"
+      responses:
+        201:
+          description: "Created"
+        400:
+          description: "Invalid input"
+        500:
+          description: "Internal error"
+      x-swagger-router-controller: "Ingest"
+definitions:
+  Ingest:
+    type: "object"
+    properties:
+      element:
+        type: "object"
+        properties:
+          id:
+            type: "string"
+            format: "uuid"
+          file:
+            type: "string"
+          additionalFiles:
+            type: "array"
+            items:
+              type: "string"
+          additionalData:
+            type: "object"
+      workflowName:
+        type: "string"
+  Workflow:
+    type: "object"
+    required:
+      - "id"
+      - "name"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+        example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+      name:
+        type: "string"
+        example: "default-workflow"
+      activities:
+        type: "array"
+        example:
+          name: "dynamicActivity"
+          params:
+            action: "apiInvoker"
+            method: "dynamicPost"
+            description: "post by apiInvoker"
+            additional:
+              data:
+                - "imagingDate"
+                - "imagingTime"
+              url: "http://localhost:8080/"
+        items:
+          $ref: "#/definitions/Workflow_activities"
+    example:
+      name: "default-workflow"
+      id: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+      activities:
+        - name: "dynamicActivity"
+          params:
+            action: "apiInvoker"
+            method: "dynamicPost"
+            description: "post by apiInvoker"
+            additional:
+              data: ["imagingDate", "imagingime"]
+              url: "http://localhost:8080/"
+        - name: "backupMetadata"
+  Workflow_params_additional:
+    type: "object"
+    properties:
+      data:
+        type: "array"
+        items:
+          type: "string"
+      url:
+        type: "string"
+  Workflow_params:
+    type: "object"
+    properties:
+      action:
+        type: "string"
+      method:
+        type: "string"
+      description:
+        type: "string"
+      additional:
+        $ref: "#/definitions/Workflow_params_additional"
+  Workflow_activities:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      params:
+        $ref: "#/definitions/Workflow_params"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
