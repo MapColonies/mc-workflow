@@ -23,7 +23,7 @@ exports.workflowsPOST = async function (args, res, next) {
     res.statusCode = 201;
     res.end("Created");
   } catch (err) {
-    console.log(err);
+    console.log("WorkflowService:",err);
     //TODO: add logger
   }
 };

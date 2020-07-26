@@ -21,16 +21,17 @@ module.exports = class StrategoHandler {
   async configureAsync() {
     let rootpath = path.resolve(config.fileSystem.workflowsPath);
     try {
-      await fs.statSync(rootpath);
+      // await fs.statSync(rootpath);
 
-      let files = await fs.readdirAsync(rootpath);
+      const files = await fs.readdirAsync(rootpath);
+      console.log(files);
       if (!files.includes("default.json")) {
         throw new Error("workflow default.json not exist");
       }
       for (let file of files) {
         if (path.extname(file) === ".json") {
           //TODO: add load workflow logger
-          let filepath = path.join(rootpath, file);
+          const filepath = path.join(rootpath, file);
           // Load workflow to array.
           workflows[file] = JSON.parse(await fs.readFileAsync(filepath));
         }
@@ -49,8 +50,8 @@ module.exports = class StrategoHandler {
       // Process the frame through the selected workflow.
       const finalFrame = await workflow.build(selectedWorkflow);
       return finalFrame;
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      throw err;
     }
   }
 };

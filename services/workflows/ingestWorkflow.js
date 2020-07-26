@@ -8,7 +8,6 @@ module.exports = class uploadWorkflow extends BaseWorkflow {
     this._job = job;
     this._apiInvoker = apiInvoker;
     this._helper = helper;
-    console.log(this._helper)
     this._returnValue = this._job;
   }
 
@@ -17,10 +16,12 @@ module.exports = class uploadWorkflow extends BaseWorkflow {
   }
 
   backupMetadata() {
-    console.log("BACKUP METADATA!");
+    return () => {
+      console.log("BACKUP METADATA!");
+    };
   }
 
-  blablabla() {
-    console.log("blablbalbaa");
+  convertFile() {
+    console.log("CONVERT FILE");
   }
 };

@@ -20,15 +20,15 @@ module.exports.BaseWorkflow = class BaseWorkflow {
       this._workflow = workflow;
       console.log(`Building workflow ${this._workflow.name}`);
       await this.checkWorkflowValidation();
-      let workflowOrder = jWorkflow.order(() => {}, this);
+      const workflowOrder = jWorkflow.order(() => {}, this);
       const activities = [];
       workflow.activities.forEach((activity) => {
         activities.push(this.getActivity(activity));
       });
       workflowOrder.andThen(activities, this);
-
-      return new Promise((resolve, reject) => {
-        console.log("Workflow prepare successfully, Stating workflow"),
+      activities.forEach((act) => console.log("type:::", act, typeof act));
+      return await new Promise((resolve, reject) => {
+        console.log("Workflow prepare successfully, Starting workflow"),
           workflowOrder.start({
             callback: (result) => {
               if (result instanceof Error) {
@@ -41,29 +41,37 @@ module.exports.BaseWorkflow = class BaseWorkflow {
       });
     } catch (err) {
       console.log(`Error in building activities : ${err}`);
+      throw err;
     }
   }
 
   getActivity(activity) {
-    if (activity.name !== "dynamicActivity") {
-      return this[activity.name];
-    } else {
-      return this[activity.name](activity.params);
+    try {
+      if (activity.name !== "dynamicActivity") {
+        return this[activity.name](activity.params);
+      } else {
+        return this[activity.name](activity.params);
+      }
+    } catch (err) {
+      throw err;
     }
   }
 
-  async dynamicActivity(params) {
+  dynamicActivity(params) {
     console.log(`dynamicActivity ${params.action} - ${params.description}`);
-    console.log(params.action);
-    console.log(`headers: ${JSON.stringify(params.additional.headers)}`);
-    return await this[`_${params.action}`][`${params.method}`](
-      this._returnValue,
-      params.additional
-    );
+    return () => {
+      try {
+        return this[`_${params.action}`][`${params.method}`](
+          this._returnValue,
+          params.additional
+        );
+      } catch (err) {
+        throw err;
+      }
+    };
   }
 
   checkWorkflowValidation(workflow = this._workflow) {
-    console.log(workflow);
     return new Promise((resolve, reject) => {
       if (
         !this._helper.objectContainsFields(

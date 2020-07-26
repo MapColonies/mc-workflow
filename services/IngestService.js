@@ -12,13 +12,14 @@ const StrategoHandler = container.get("strategoHandler");
 exports.ingestPOST = async function (args, res, next) {
   try {
     const ingestedFile = args;
-    StrategoHandler.handleJobByIngestWorkflow(ingestedFile);
-
+    await StrategoHandler.handleJobByIngestWorkflow(ingestedFile);
     //TODO: add logger
+    console.log("reached service")
     res.statusCode = 201;
     res.end("Created");
   } catch (err) {
-    console.log(err);
+    console.log("error: ",err);
+
     //TODO: add logger
   }
 };

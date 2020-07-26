@@ -17,11 +17,9 @@ module.exports = class APIInvoker {
 
       console.log("General post success for element id:%s", elementObj.id);
       const newElement = { ...reqParams.element, ...response.data };
+
       return newElement;
     } catch (error) {
-      console.log(
-        `Request General post for element "${elementObj.id}" was failed because ${error}`
-      );
       throw error;
     }
   }
