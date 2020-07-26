@@ -14,11 +14,11 @@ exports.ingestPOST = async function (args, res, next) {
     const ingestedFile = args;
     await StrategoHandler.handleJobByIngestWorkflow(ingestedFile);
     //TODO: add logger
-    console.log("reached service")
     res.statusCode = 201;
     res.end("Created");
   } catch (err) {
-    console.log("error: ",err);
+    res.statusCode = err.response.status;
+    res.end(err.response.data.message);
 
     //TODO: add logger
   }

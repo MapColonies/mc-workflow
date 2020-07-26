@@ -22,6 +22,8 @@ module.exports = class uploadWorkflow extends BaseWorkflow {
   }
 
   convertFile() {
-    console.log("CONVERT FILE");
+    return () => {
+      console.log("CONVERT FILE");
+    };
   }
 };

@@ -7,6 +7,7 @@ module.exports.BaseWorkflow = class BaseWorkflow {
   constructor(job, helper) {
     this._job = job;
     this._helper = helper;
+    this._returnValue = null;
 
     //properties for workflow validation
     this._validator = {
@@ -50,24 +51,31 @@ module.exports.BaseWorkflow = class BaseWorkflow {
       if (activity.name !== "dynamicActivity") {
         return this[activity.name](activity.params);
       } else {
-        return this[activity.name](activity.params);
+        return this[activity.name](activity.wait, activity.dropOnError, activity.params);
       }
     } catch (err) {
       throw err;
     }
   }
 
-  dynamicActivity(params) {
-    console.log(`dynamicActivity ${params.action} - ${params.description}`);
-    return () => {
-      try {
+  dynamicActivity(wait = true, dropOnError = true, params) {
+    return (prev, baton) => {
+      let template = () => {
+        if (!params.additional.headers) {
+          params.additional.headers = {};
+        }
         return this[`_${params.action}`][`${params.method}`](
           this._returnValue,
           params.additional
         );
-      } catch (err) {
-        throw err;
-      }
+      };
+      template.fname = params.description
+        ? params.description
+        : "dynamic Activity";
+
+      wait
+        ? this.waitTrueTemplate(baton, template, dropOnError)
+        : this.waitFalseTemplate(template);
     };
   }
 
@@ -128,5 +136,33 @@ module.exports.BaseWorkflow = class BaseWorkflow {
       });
       resolve();
     });
+  }
+
+  async waitTrueTemplate(baton, template, dropOnError = true) {
+    try {
+      baton.take();
+      let result = await template();
+      baton.pass(result);
+    } catch (err) {
+      err.ActivityName = template.fname;
+      console.log(this._returnValue);
+      console.log(
+        "error",
+        `Error in workflow : ${this._returnValue} ${err.message}`
+      );
+      dropOnError ? baton.drop(err) : baton.pass();
+    }
+  }
+
+  waitFalseTemplate(template) {
+    try {
+      template();
+    } catch (err) {
+      err.ActivityName = template.fname;
+      console.log(
+        "error",
+        `Error in workflow : ${this._returnValue} ${err.message}`
+      );
+    }
   }
 };
