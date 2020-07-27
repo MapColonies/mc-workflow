@@ -7,7 +7,7 @@ module.exports.BaseWorkflow = class BaseWorkflow {
   constructor(job, helper) {
     this._job = job;
     this._helper = helper;
-    this._returnValue = null;
+
 
     //properties for workflow validation
     this._validator = {
