@@ -25,7 +25,7 @@ module.exports.BaseWorkflow = class BaseWorkflow {
       //const activities = [];
       workflow.activities.forEach((activity) => {
         //activities.push(this.getActivity(activity));
-        workflowOrder.andThen(this.getActivity(activity),this);
+        workflowOrder.andThen(this.getActivity(activity), this);
       });
       //workflowOrder.andThen(activities, this);
       return await new Promise((resolve, reject) => {
@@ -39,7 +39,6 @@ module.exports.BaseWorkflow = class BaseWorkflow {
             },
             initialValue: "",
           });
-
       });
     } catch (err) {
       console.log(`Error in building activities : ${err}`);
@@ -50,7 +49,11 @@ module.exports.BaseWorkflow = class BaseWorkflow {
   getActivity(activity) {
     try {
       if (activity.name !== "dynamicActivity") {
-        return this[activity.name](activity.params);
+        return this[activity.name](
+          activity.params,
+          activity.dropOnError,
+          activity.wait
+        );
       } else {
         return this[activity.name](
           activity.wait,
@@ -143,6 +146,7 @@ module.exports.BaseWorkflow = class BaseWorkflow {
   }
 
   async waitTrueTemplate(baton, template, dropOnError = true) {
+    console.log("DropOnError:", dropOnError);
     try {
       baton.take();
       let result = await template();
@@ -151,7 +155,7 @@ module.exports.BaseWorkflow = class BaseWorkflow {
       err.ActivityName = template.fname;
       console.log(
         "error",
-        `Error in workflow : ${this._returnValue} ${err.message}`
+        `Error in workflow : ${template.fname} ${err.message}`
       );
       dropOnError ? baton.drop(err) : baton.pass();
     }
@@ -159,7 +163,6 @@ module.exports.BaseWorkflow = class BaseWorkflow {
 
   waitFalseTemplate(template) {
     try {
-      console.log("#############################################################$");
       template();
     } catch (err) {
       err.ActivityName = template.fname;

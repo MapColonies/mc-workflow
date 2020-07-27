@@ -17,10 +17,9 @@ exports.ingestPOST = async function (args, res, next) {
     res.statusCode = 201;
     res.end("Created");
   } catch (err) {
-    // res.statusCode = err;
-    // res.end(err.response.data.message);
-    console.log(err);
-
+    // res.statusCode = err.status;
+    // res.end(err.message);
+    console.log("ingestService: ",err);
     //TODO: add logger
   }
 };
