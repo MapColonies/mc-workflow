@@ -1,4 +1,12 @@
-# Logs
+# Custom gitignors ignores goes here, below
+
+#IDE
+.vscode
+.idea
+
+# This .gitignore is taken from
+# https://github.com/github/gitignore/blob/master/Node.gitignore
+
 logs
 *.log
 npm-debug.log*
