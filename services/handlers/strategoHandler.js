@@ -1,7 +1,7 @@
 const path = require("path");
 const config = require("config");
 const bluebird = require("bluebird");
-const IngestWorkflow = require("./workflows/ingestWorkflow");
+const IngestWorkflow = require("../workflows/ingestWorkflow");
 const fs = bluebird.promisifyAll(require("graceful-fs"));
 const workflows = {};
 

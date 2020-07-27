@@ -1,10 +1,10 @@
 const container = require("kontainer-di");
 module.exports = container;
 
-const dataHandlerFileSystem = require("./services/dataHandlerFileSystem");
-const strategoHandler = require("./services/strategoHandler");
+const dataHandlerFileSystem = require("./services/handlers/dataHandlerFileSystem");
+const strategoHandler = require("./services/handlers/strategoHandler");
 const apiInvoker = require("./services/apiInvoker");
-const helper = require("./services/helper");
+const helper = require("./services/helper/helper");
 const errorHandler = require("./errors/errorHandler");
 
 container.register("dataHandlerFileSystem", [], dataHandlerFileSystem);

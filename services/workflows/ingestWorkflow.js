@@ -16,7 +16,6 @@ module.exports = class uploadWorkflow extends BaseWorkflow {
   }
 
   backupMetadata(wait = true, dropOnError) {
-    console.log("backupMetadata func",dropOnError);
     return (prev, baton) => {
       let template = () => {
         throw new Error("Throw Error backupMetadata");

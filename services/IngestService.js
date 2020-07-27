@@ -19,7 +19,7 @@ exports.ingestPOST = async function (args, res, next) {
   } catch (err) {
     // res.statusCode = err.status;
     // res.end(err.message);
-    console.log("ingestService: ",err);
+    console.log("ingestService: ",err.message);
     //TODO: add logger
   }
 };

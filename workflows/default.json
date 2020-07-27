@@ -2,7 +2,7 @@
   "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
   "name": "default",
   "activities": [
-    { "name": "backupMetadata", "wait": true, "dropOnError": true },
+    { "name": "backupMetadata", "wait": true, "dropOnError": false },
     {
       "name": "dynamicActivity",
       "wait": true,

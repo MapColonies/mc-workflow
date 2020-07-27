@@ -146,7 +146,6 @@ module.exports.BaseWorkflow = class BaseWorkflow {
   }
 
   async waitTrueTemplate(baton, template, dropOnError = true) {
-    console.log("DropOnError:", dropOnError);
     try {
       baton.take();
       let result = await template();
@@ -154,7 +153,6 @@ module.exports.BaseWorkflow = class BaseWorkflow {
     } catch (err) {
       err.ActivityName = template.fname;
       console.log(
-        "error",
         `Error in workflow : ${template.fname} ${err.message}`
       );
       dropOnError ? baton.drop(err) : baton.pass();
@@ -167,7 +165,6 @@ module.exports.BaseWorkflow = class BaseWorkflow {
     } catch (err) {
       err.ActivityName = template.fname;
       console.log(
-        "error",
         `Error in workflow : ${this._returnValue} ${err.message}`
       );
     }
