@@ -15,9 +15,22 @@ module.exports = class uploadWorkflow extends BaseWorkflow {
     return this._returnValue;
   }
 
-  backupMetadata() {
-    return () => {
-      console.log("BACKUP METADATA!");
+  // backupMetadata() {
+  //   return () => {
+  //     throw new Error("error wasssss")
+  //   };
+  // }
+
+  backupMetadata(wait = true, dropOnError) {
+    return (prev, baton) => {
+      let template = () => {
+        throw new Error("BLABLAB LA")
+      };
+      template.fname = "backupMetadata";
+
+      wait
+        ? this.waitTrueTemplate(baton, template, dropOnError)
+        : this.waitFalseTemplate(template);
     };
   }
 

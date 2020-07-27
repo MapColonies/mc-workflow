@@ -22,12 +22,12 @@ module.exports.BaseWorkflow = class BaseWorkflow {
       console.log(`Building workflow ${this._workflow.name}`);
       await this.checkWorkflowValidation();
       const workflowOrder = jWorkflow.order(() => {}, this);
-      const activities = [];
+      //const activities = [];
       workflow.activities.forEach((activity) => {
-        activities.push(this.getActivity(activity));
+        //activities.push(this.getActivity(activity));
+        workflowOrder.andThen(this.getActivity(activity),this);
       });
-      workflowOrder.andThen(activities, this);
-      activities.forEach((act) => console.log("type:::", act, typeof act));
+      //workflowOrder.andThen(activities, this);
       return await new Promise((resolve, reject) => {
         console.log("Workflow prepare successfully, Starting workflow"),
           workflowOrder.start({
@@ -39,6 +39,7 @@ module.exports.BaseWorkflow = class BaseWorkflow {
             },
             initialValue: "",
           });
+
       });
     } catch (err) {
       console.log(`Error in building activities : ${err}`);
@@ -51,7 +52,11 @@ module.exports.BaseWorkflow = class BaseWorkflow {
       if (activity.name !== "dynamicActivity") {
         return this[activity.name](activity.params);
       } else {
-        return this[activity.name](activity.wait, activity.dropOnError, activity.params);
+        return this[activity.name](
+          activity.wait,
+          activity.dropOnError,
+          activity.params
+        );
       }
     } catch (err) {
       throw err;
@@ -115,8 +120,7 @@ module.exports.BaseWorkflow = class BaseWorkflow {
                 )
               ) {
                 if (
-                  _.indexOf(
-                    this._validator.dynamicActivityNameValues,
+                  this._validator.dynamicActivityNameValues.indexOf(
                     activity.params.action
                   ) !== -1
                 ) {
@@ -145,7 +149,6 @@ module.exports.BaseWorkflow = class BaseWorkflow {
       baton.pass(result);
     } catch (err) {
       err.ActivityName = template.fname;
-      console.log(this._returnValue);
       console.log(
         "error",
         `Error in workflow : ${this._returnValue} ${err.message}`
@@ -156,6 +159,7 @@ module.exports.BaseWorkflow = class BaseWorkflow {
 
   waitFalseTemplate(template) {
     try {
+      console.log("#############################################################$");
       template();
     } catch (err) {
       err.ActivityName = template.fname;
