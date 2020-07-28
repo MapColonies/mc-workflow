@@ -1,8 +1,8 @@
 swagger: "2.0"
 info:
-  description: "api  for stratego service"
+  description: "api  for workflow service"
   version: "1.0.0"
-  title: "Stratego"
+  title: "Workflow"
   termsOfService: "http://swagger.io/terms/"
   contact:
     email: "cl_shlomikoncha@rnd-hub.com"
@@ -190,3 +190,4 @@ definitions:
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"
+  

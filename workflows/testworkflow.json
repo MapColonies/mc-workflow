@@ -1,1 +1,0 @@
-{"name":"testworkflow","id":"9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d","activities":[{"name":"dynamicActivity","params":{"action":"apiInvoker","method":"dynamicPost","description":"post by apiInvoker","additional":{"data":["imagingDate","imagingime"],"url":"http://localhost:8080/"}}},{"name":"backupMetadata"}]}

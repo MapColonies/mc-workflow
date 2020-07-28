@@ -22,12 +22,11 @@ module.exports.BaseWorkflow = class BaseWorkflow {
       console.log(`Building workflow ${this._workflow.name}`);
       await this.checkWorkflowValidation();
       const workflowOrder = jWorkflow.order(() => {}, this);
-      //const activities = [];
+      
       workflow.activities.forEach((activity) => {
-        //activities.push(this.getActivity(activity));
         workflowOrder.andThen(this.getActivity(activity), this);
       });
-      //workflowOrder.andThen(activities, this);
+
       return await new Promise((resolve, reject) => {
         console.log("Workflow prepare successfully, Starting workflow"),
           workflowOrder.start({
