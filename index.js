@@ -10,7 +10,7 @@ const jsyaml = require("js-yaml");
 const config = require("config");
 const container = require('./containerConfig')
 const serverPort = config.get("server.port");
-const strategoHandler = container.get('strategoHandler');
+const workflowHandler = container.get('workflowHandler');
 
 // swaggerRouter configuration
 const options = {
@@ -39,7 +39,7 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
 
   (async () => {
     try {
-      await strategoHandler.init();
+      await workflowHandler.init();
     } catch (err) {
       console.log(err);
     }

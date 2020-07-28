@@ -5,7 +5,7 @@ const IngestWorkflow = require("../workflows/ingestWorkflow");
 const fs = bluebird.promisifyAll(require("graceful-fs"));
 const workflows = {};
 
-module.exports = class StrategoHandler {
+module.exports = class WorkflowHandler {
   constructor(apiInvoker, helper) {
     this._apiInvoker = apiInvoker;
     this._helper = helper;
@@ -21,8 +21,6 @@ module.exports = class StrategoHandler {
   async configureAsync() {
     let rootpath = path.resolve(config.fileSystem.workflowsPath);
     try {
-      // await fs.statSync(rootpath);
-
       const files = await fs.readdirAsync(rootpath);
       console.log(files);
       if (!files.includes("default.json")) {
