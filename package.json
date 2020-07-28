@@ -1,7 +1,7 @@
 {
-  "name": "stratego",
+  "name": "workflow",
   "version": "1.0.0",
-  "description": "api  for stratego service",
+  "description": "api  for workflow service",
   "main": "index.js",
   "scripts": {
     "prestart": "npm install",

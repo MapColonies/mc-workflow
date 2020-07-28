@@ -2,7 +2,7 @@
 
 const container = require("../containerConfig");
 const config = require("config");
-const StrategoHandler = container.get("strategoHandler");
+const workflowHandler = container.get("workflowHandler");
 /**
  * create ingest
  *
@@ -12,15 +12,13 @@ const StrategoHandler = container.get("strategoHandler");
 exports.ingestPOST = async function (args, res, next) {
   try {
     const ingestedFile = args;
-    const result = await StrategoHandler.handleJobByIngestWorkflow(
+    const result = await workflowHandler.handleJobByIngestWorkflow(
       ingestedFile
     );
     //TODO: add logger
     res.statusCode = 201;
     res.end(JSON.stringify(result));
   } catch (err) {
-    // res.statusCode = err.status;
-    // res.end(err.message);
     console.log("ingestService: ", err.message);
     //TODO: add logger
   }
