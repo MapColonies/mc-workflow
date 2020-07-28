@@ -2,19 +2,19 @@
 
 const jWorkflow = require("jWorkflow");
 const _ = require("lodash");
+const config = require('config');
 
 module.exports.BaseWorkflow = class BaseWorkflow {
   constructor(job, helper) {
     this._job = job;
     this._helper = helper;
-
-
     //properties for workflow validation
     this._validator = {
-      workflowFields: ["name", "activities"],
-      dynamicActivityFields: ["action", "method", "additional"],
-      dynamicActivityNameValues: ["apiInvoker", "cache"],
+      workflowFields: config.get('validator.workflowFields'),
+      dynamicActivityFields: config.get('validator.dynamicActivityFields'),
+      dynamicActivityNameValues: config.get('validator.dynamicActivityNameValues')
     };
+    this._dynamicActivity = "dynamicActivity";
   }
   async build(workflow) {
     try {
@@ -47,7 +47,7 @@ module.exports.BaseWorkflow = class BaseWorkflow {
 
   getActivity(activity) {
     try {
-      if (activity.name !== "dynamicActivity") {
+      if (activity.name !== this.dynamicActivity) {
         return this[activity.name](
           activity.params,
           activity.dropOnError,
@@ -78,7 +78,7 @@ module.exports.BaseWorkflow = class BaseWorkflow {
       };
       template.fname = params.description
         ? params.description
-        : "dynamic Activity";
+        : this._dynamicActivity;
 
       wait
         ? this.waitTrueTemplate(baton, template, dropOnError)
@@ -109,10 +109,10 @@ module.exports.BaseWorkflow = class BaseWorkflow {
               );
             }
           } else {
-            reject(new Error(`Workflow validation - activity has no name`));
+            reject(new Error(`Workflow validation - activity in ${workflow.name} workflow has no name`));
           }
 
-          if (activity.name === "dynamicActivity") {
+          if (activity.name === this._dynamicActivity) {
             let isValid = false;
             if (activity.hasOwnProperty("params")) {
               if (

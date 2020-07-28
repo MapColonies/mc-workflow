@@ -4,5 +4,10 @@
     },
     "fileSystem": {
         "workflowsPath": "./workflows"
+    },
+    "validator": {
+      "workflowFields": ["name", "activities"],
+      "dynamicActivityFields": ["action", "method", "additional"],
+      "dynamicActivityNameValues": ["apiInvoker"]
     }
 }
