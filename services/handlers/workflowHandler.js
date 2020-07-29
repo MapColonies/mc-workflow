@@ -22,7 +22,6 @@ module.exports = class WorkflowHandler {
     let rootpath = path.resolve(config.fileSystem.workflowsPath);
     try {
       const files = await fs.readdirAsync(rootpath);
-      console.log(files);
       if (!files.includes("default.json")) {
         throw new Error("workflow default.json not exist");
       }
@@ -34,6 +33,7 @@ module.exports = class WorkflowHandler {
           workflows[file] = JSON.parse(await fs.readFileAsync(filepath));
         }
       }
+      // TODO: add logger for done load files
       console.log(`Done load workflow from ${rootpath}`);
     } catch (err) {
       console.log(err);
@@ -43,6 +43,7 @@ module.exports = class WorkflowHandler {
   async handleJobByIngestWorkflow(job) {
     try {
       const workflow = new IngestWorkflow(job, this._apiInvoker, this._helper);
+      // workflow.checkWorkflowValidation(job);
       const selectedWorkflow =
         workflows[`${job.workflowName}.json`] || workflows["default.json"];
       // Process the frame through the selected workflow.

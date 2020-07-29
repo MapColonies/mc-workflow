@@ -8,9 +8,10 @@ const app = require("connect")();
 const swaggerTools = require("swagger-tools");
 const jsyaml = require("js-yaml");
 const config = require("config");
-const container = require('./containerConfig')
+const container = require("./containerConfig");
 const serverPort = config.get("server.port");
-const workflowHandler = container.get('workflowHandler');
+const workflowHandler = container.get("workflowHandler");
+const handleError = require("./errors/handleError");
 
 // swaggerRouter configuration
 const options = {
@@ -37,6 +38,12 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   // Serve the Swagger documents and Swagger UI
   app.use(middleware.swaggerUi());
 
+  app.use((err, req, res, next) => {
+    const error = handleError(err);
+    res.statusCode = error.status;
+    res.end(error.message);
+  });
+
   (async () => {
     try {
       await workflowHandler.init();
@@ -44,7 +51,7 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
       console.log(err);
     }
   })();
-  
+
   http.createServer(app).listen(serverPort, function () {
     console.log(`Your server is listening on port ${serverPort}`);
     console.log(

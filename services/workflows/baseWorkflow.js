@@ -2,27 +2,33 @@
 
 const jWorkflow = require("jWorkflow");
 const _ = require("lodash");
-const config = require('config');
+const config = require("config");
+const workflowError = require("../../errors/workflowError");
 
-module.exports.BaseWorkflow = class BaseWorkflow {
-  constructor(job, helper) {
-    this._job = job;
+module.exports = class BaseWorkflow {
+  constructor(helper, job) {
     this._helper = helper;
+    this._job = job;
     //properties for workflow validation
     this._validator = {
-      workflowFields: config.get('validator.workflowFields'),
-      dynamicActivityFields: config.get('validator.dynamicActivityFields'),
-      dynamicActivityNameValues: config.get('validator.dynamicActivityNameValues')
+      workflowFields: config.get("validator.workflowFields"),
+      dynamicActivityFields: config.get("validator.dynamicActivityFields"),
+      dynamicActivityNameValues: config.get(
+        "validator.dynamicActivityNameValues"
+      ),
     };
     this._dynamicActivity = "dynamicActivity";
+    this._activitiesSet = new Set();
+    this.loadActivitiesSet();
   }
+
   async build(workflow) {
     try {
       this._workflow = workflow;
-      console.log(`Building workflow ${this._workflow.name}`);
+      console.log(`Building workflow ${this._workflow}`);
       await this.checkWorkflowValidation();
       const workflowOrder = jWorkflow.order(() => {}, this);
-      
+
       workflow.activities.forEach((activity) => {
         workflowOrder.andThen(this.getActivity(activity), this);
       });
@@ -47,7 +53,7 @@ module.exports.BaseWorkflow = class BaseWorkflow {
 
   getActivity(activity) {
     try {
-      if (activity.name !== this.dynamicActivity) {
+      if (activity.name !== this._dynamicActivity) {
         return this[activity.name](
           activity.params,
           activity.dropOnError,
@@ -95,7 +101,9 @@ module.exports.BaseWorkflow = class BaseWorkflow {
         )
       ) {
         reject(
-          new Error(`Workflow validation - missing fields in root workflow`)
+          new workflowError(
+            `Workflow validation - missing fields in root workflow`
+          )
         );
       }
       workflow.activities.forEach((activity) => {
@@ -103,13 +111,17 @@ module.exports.BaseWorkflow = class BaseWorkflow {
           if (activity.hasOwnProperty("name")) {
             if (typeof this[activity.name] !== "function") {
               reject(
-                new Error(
+                new workflowError(
                   `Workflow validation - There is no activity for ${activity.name}`
                 )
               );
             }
           } else {
-            reject(new Error(`Workflow validation - activity in ${workflow.name} workflow has no name`));
+            reject(
+              new workflowError(
+                `Workflow validation - activity in ${workflow.name} workflow has no name`
+              )
+            );
           }
 
           if (activity.name === this._dynamicActivity) {
@@ -132,7 +144,7 @@ module.exports.BaseWorkflow = class BaseWorkflow {
             }
             if (!isValid) {
               reject(
-                new Error(
+                new workflowError(
                   `Workflow validation - dynamic activity missing fields`
                 )
               );
@@ -151,9 +163,7 @@ module.exports.BaseWorkflow = class BaseWorkflow {
       baton.pass(result);
     } catch (err) {
       err.ActivityName = template.fname;
-      console.log(
-        `Error in workflow : ${template.fname} ${err.message}`
-      );
+      console.log(`Error in workflow : ${template.fname} ${err.message}`);
       dropOnError ? baton.drop(err) : baton.pass();
     }
   }
@@ -163,9 +173,16 @@ module.exports.BaseWorkflow = class BaseWorkflow {
       template();
     } catch (err) {
       err.ActivityName = template.fname;
-      console.log(
-        `Error in workflow : ${this._returnValue} ${err.message}`
-      );
+      console.log(`Error in workflow : ${this._returnValue} ${err.message}`);
     }
+  }
+
+  async loadActivitiesSet() {
+    //load all available activities into Set
+    await this._activitiesSet.add(this.dynamicActivity);
+  }
+
+  activityExist(activity) {
+    return this._activitiesSet.has(this[activity]);
   }
 };

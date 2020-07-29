@@ -2,7 +2,11 @@
 
 const container = require("../containerConfig");
 const config = require("config");
+const { ingestPOST } = require("./IngestService");
 const DataHandlerFileSystem = container.get("dataHandlerFileSystem");
+const apiInvoker = container.get("apiInvoker");
+const helper = container.get("helper");
+const ingestWorkflow = require("../services/workflows/ingestWorkflow");
 /**
  * create workflow
  *
@@ -13,6 +17,8 @@ exports.workflowsPOST = async function (args, res, next) {
   try {
     const incWorkflow = args;
     const jsonWorkflowData = JSON.stringify(incWorkflow);
+    const workflow = new ingestWorkflow({}, apiInvoker, helper);
+    await workflow.checkWorkflowValidation(incWorkflow);
     await DataHandlerFileSystem.writeFile(
       config.get("fileSystem.workflowsPath"),
       incWorkflow.name,
@@ -22,8 +28,8 @@ exports.workflowsPOST = async function (args, res, next) {
     //TODO: add logger
     res.statusCode = 201;
     res.end("Created");
-  } catch (err) {
-    console.log("WorkflowService:",err);
+  } catch (error) {
+    next(error);
     //TODO: add logger
   }
 };
@@ -35,8 +41,8 @@ exports.workflowsGET = async function (args, res, next) {
     );
     //TODO: add logger
     res.end(JSON.stringify(files));
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    next(error);
     //TODO: add logger
   }
 };
@@ -50,18 +56,19 @@ exports.workflowsDELETE = async function (args, res, next) {
       workflowName,
       "json"
     );
-    fileExists? await DataHandlerFileSystem.removeFile(
+    fileExists
+      ? await DataHandlerFileSystem.removeFile(
           workflowsPath,
           workflowName,
           "json"
         )
       : res.end("Not found");
 
-      //TODO: add logger
+    //TODO: add logger
     res.statusCode = 202;
     res.end("Deleted");
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    next(error);
     // //TODO: add logger
   }
 };
