@@ -14,7 +14,7 @@ module.exports = class APIInvoker {
         body: bodyObj,
       };
       const response = await axios.post(configRequest.url, configRequest.body);
-
+      // TODO: add logger
       console.log("General post success for element id:%s", elementObj.id);
       const newElement = { ...reqParams.element, ...response.data };
 

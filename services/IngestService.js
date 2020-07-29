@@ -3,6 +3,7 @@
 const container = require("../containerConfig");
 const config = require("config");
 const workflowHandler = container.get("workflowHandler");
+
 /**
  * create ingest
  *
@@ -16,10 +17,11 @@ exports.ingestPOST = async function (args, res, next) {
       ingestedFile
     );
     //TODO: add logger
-    res.statusCode = 201;
+    // workflow end:
+    res.statusCode = 200;
     res.end(JSON.stringify(result));
-  } catch (err) {
-    console.log("ingestService: ", err.message);
+  } catch (error) {
+    next(error);
     //TODO: add logger
   }
 };

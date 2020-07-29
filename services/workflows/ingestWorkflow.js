@@ -1,10 +1,10 @@
 "use strict";
 
-const { BaseWorkflow } = require("./baseWorkflow");
+const BaseWorkflow = require("./baseWorkflow");
 
 module.exports = class uploadWorkflow extends BaseWorkflow {
   constructor(job, apiInvoker, helper) {
-    super(job, helper);
+    super(helper, job);
     this._job = job;
     this._apiInvoker = apiInvoker;
     this._helper = helper;
@@ -25,12 +25,6 @@ module.exports = class uploadWorkflow extends BaseWorkflow {
       wait
         ? this.waitTrueTemplate(baton, template, dropOnError)
         : this.waitFalseTemplate(template);
-    };
-  }
-
-  convertFile() {
-    return () => {
-      console.log("CONVERT FILE");
     };
   }
 };
