@@ -102,8 +102,10 @@ paths:
 definitions:
   Ingest:
     type: "object"
+    required:
+      - action
     properties:
-      element:
+      imageMetaData:
         type: "object"
         properties:
           id:
@@ -117,7 +119,7 @@ definitions:
               type: "string"
           additionalData:
             type: "object"
-      workflowName:
+      action:
         type: "string"
   Workflow:
     type: "object"

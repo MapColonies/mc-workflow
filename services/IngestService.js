@@ -1,8 +1,8 @@
 "use strict";
 
 const container = require("../containerConfig");
-const config = require("config");
 const workflowHandler = container.get("workflowHandler");
+const logger = container.get("logger");
 
 /**
  * create ingest
@@ -16,12 +16,17 @@ exports.ingestPOST = async function (args, res, next) {
     const result = await workflowHandler.handleJobByIngestWorkflow(
       ingestedFile
     );
-    //TODO: add logger
-    // workflow end:
+    
+    logger.info(
+      `[ingestService] ingestPOST - Workflow: "${ingestedFile.action}" DONE`
+    );
+
     res.statusCode = 200;
     res.end(JSON.stringify(result));
   } catch (error) {
+    logger.error(
+      `[ingestService] ingestPOST - Workflow FAILED - Error: ${error.message} `
+    );
     next(error);
-    //TODO: add logger
   }
 };

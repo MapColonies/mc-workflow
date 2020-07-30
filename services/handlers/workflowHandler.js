@@ -2,13 +2,16 @@ const path = require("path");
 const config = require("config");
 const bluebird = require("bluebird");
 const IngestWorkflow = require("../workflows/ingestWorkflow");
+const workflowError = require("../../errors/workflowError");
+const { reject } = require("bluebird");
 const fs = bluebird.promisifyAll(require("graceful-fs"));
 const workflows = {};
 
 module.exports = class WorkflowHandler {
-  constructor(apiInvoker, helper) {
+  constructor(apiInvoker, helper, logger) {
     this._apiInvoker = apiInvoker;
     this._helper = helper;
+    this._logger = logger;
   }
   async init() {
     try {
@@ -22,35 +25,43 @@ module.exports = class WorkflowHandler {
     let rootpath = path.resolve(config.fileSystem.workflowsPath);
     try {
       const files = await fs.readdirAsync(rootpath);
-      if (!files.includes("default.json")) {
-        throw new Error("workflow default.json not exist");
-      }
       for (let file of files) {
         if (path.extname(file) === ".json") {
-          //TODO: add load workflow logger
           const filepath = path.join(rootpath, file);
-          // Load workflow to array.
+          // load workflow to array.
           workflows[file] = JSON.parse(await fs.readFileAsync(filepath));
         }
       }
-      // TODO: add logger for done load files
-      console.log(`Done load workflow from ${rootpath}`);
+      this._logger.info(
+        `[workflowHandler] configureAsync - Done load workflow from ${rootpath}`
+      );
     } catch (err) {
-      console.log(err);
+      this._logger.error(
+        `[workflowHandler] configureAsync - Failed load workflow - ${err}`
+      );
     }
   }
 
   async handleJobByIngestWorkflow(job) {
     try {
-      const workflow = new IngestWorkflow(job, this._apiInvoker, this._helper);
-      // workflow.checkWorkflowValidation(job);
-      const selectedWorkflow =
-        workflows[`${job.workflowName}.json`] || workflows["default.json"];
-      // Process the frame through the selected workflow.
-      const finalFrame = await workflow.build(selectedWorkflow);
-      return finalFrame;
+      const workflow = new IngestWorkflow(
+        job,
+        this._apiInvoker,
+        this._helper,
+        this._logger
+      );
+      await workflow.checkIngestValidation(job);
+      const selectedWorkflow = workflows[`${job.action}.json`];
+      // Process the frame through the selected workflow if exists.
+      return selectedWorkflow
+        ? await workflow.build(selectedWorkflow)
+        : this.workflowNotExistsError(`workflow is not exists`);
     } catch (err) {
       throw err;
     }
+  }
+
+  workflowNotExistsError(message) {
+    throw new workflowError(message);
   }
 };

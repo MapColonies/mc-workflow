@@ -6,8 +6,9 @@ const fs = bluebird.promisifyAll(require("graceful-fs"));
 const path = require("path");
 
 module.exports = class DataHandlerFileSystem extends DataHandler {
-  constructor() {
+  constructor(logger) {
     super();
+    this._logger = logger;
   }
 
   readStream(filePath, streamChunkSize) {
@@ -21,7 +22,7 @@ module.exports = class DataHandlerFileSystem extends DataHandler {
         }
       })
       .on("close", (err) => {
-        console.log(
+        this._logger.info(
           `FileSystem read stream was failed and file is closed : ${filePath}`
         );
       });
@@ -31,7 +32,7 @@ module.exports = class DataHandlerFileSystem extends DataHandler {
 
   writeFile(filePath, fileName, data, fileExtension) {
     fs.writeFile(`${filePath}/${fileName}.${fileExtension}`, data, (err) => {
-      if (err) console.log(err);
+      if (err) throw err;
     });
   }
 

@@ -1,12 +1,12 @@
 "use strict";
 
+const ingestWorkflow = require("../services/workflows/ingestWorkflow");
 const container = require("../containerConfig");
 const config = require("config");
-const { ingestPOST } = require("./IngestService");
 const DataHandlerFileSystem = container.get("dataHandlerFileSystem");
 const apiInvoker = container.get("apiInvoker");
 const helper = container.get("helper");
-const ingestWorkflow = require("../services/workflows/ingestWorkflow");
+const logger = container.get("logger");
 /**
  * create workflow
  *
@@ -14,10 +14,11 @@ const ingestWorkflow = require("../services/workflows/ingestWorkflow");
  * no response value expected for this operation
  **/
 exports.workflowsPOST = async function (args, res, next) {
+  const incWorkflow = args;
   try {
-    const incWorkflow = args;
     const jsonWorkflowData = JSON.stringify(incWorkflow);
     const workflow = new ingestWorkflow({}, apiInvoker, helper);
+
     await workflow.checkWorkflowValidation(incWorkflow);
     await DataHandlerFileSystem.writeFile(
       config.get("fileSystem.workflowsPath"),
@@ -25,12 +26,16 @@ exports.workflowsPOST = async function (args, res, next) {
       jsonWorkflowData,
       "json"
     );
-    //TODO: add logger
+    logger.info(
+      `[WorkflowService] workflowPOST - workflow: ${incWorkflow.name} in created`
+    );
     res.statusCode = 201;
     res.end("Created");
   } catch (error) {
+    logger.error(
+      `[WorkflowService] workflowPOST - failed to create workflow: ${incWorkflow.name} - ${error}`
+    );
     next(error);
-    //TODO: add logger
   }
 };
 
@@ -39,11 +44,13 @@ exports.workflowsGET = async function (args, res, next) {
     const files = await DataHandlerFileSystem.getFilesFromRootPath(
       config.fileSystem.workflowsPath
     );
-    //TODO: add logger
+    logger.info(`[WorkflowService] workflowsGET - get workflows: ${files}`);
     res.end(JSON.stringify(files));
   } catch (error) {
+    logger.error(
+      `[WorkflowService] workflowsGET - failed to get workflows: ${error}`
+    );
     next(error);
-    //TODO: add logger
   }
 };
 
@@ -64,11 +71,15 @@ exports.workflowsDELETE = async function (args, res, next) {
         )
       : res.end("Not found");
 
-    //TODO: add logger
+    logger.info(
+      `[WorkflowService] workflowsDELETE - workflow: ${workflowName} deleted`
+    );
     res.statusCode = 202;
     res.end("Deleted");
   } catch (error) {
+    logger.info(
+      `[WorkflowService] workflowsDELETE - workflow: ${workflowName} failed to delete - ${error}`
+    );
     next(error);
-    // //TODO: add logger
   }
 };
