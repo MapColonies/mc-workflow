@@ -7,6 +7,7 @@ const DataHandlerFileSystem = container.get("dataHandlerFileSystem");
 const apiInvoker = container.get("apiInvoker");
 const helper = container.get("helper");
 const logger = container.get("logger");
+const workflowHandler = container.get("workflowHandler");
 /**
  * create workflow
  *
@@ -26,8 +27,10 @@ exports.workflowsPOST = async function (args, res, next) {
       jsonWorkflowData,
       "json"
     );
+
+    workflowHandler.loadWorkflow(incWorkflow);
     logger.info(
-      `[WorkflowService] workflowPOST - workflow: ${incWorkflow.name} in created`
+      `[WorkflowService] workflowPOST - workflow: ${incWorkflow.name} created`
     );
     res.statusCode = 201;
     res.end("Created");

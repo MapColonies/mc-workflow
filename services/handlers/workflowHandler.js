@@ -3,7 +3,6 @@ const config = require("config");
 const bluebird = require("bluebird");
 const IngestWorkflow = require("../workflows/ingestWorkflow");
 const workflowError = require("../../errors/workflowError");
-const { reject } = require("bluebird");
 const fs = bluebird.promisifyAll(require("graceful-fs"));
 const workflows = {};
 
@@ -12,6 +11,7 @@ module.exports = class WorkflowHandler {
     this._apiInvoker = apiInvoker;
     this._helper = helper;
     this._logger = logger;
+    this._workflows = workflows;
   }
   async init() {
     try {
@@ -22,14 +22,14 @@ module.exports = class WorkflowHandler {
   }
 
   async configureAsync() {
-    let rootpath = path.resolve(config.fileSystem.workflowsPath);
+    const rootpath = path.resolve(config.fileSystem.workflowsPath);
     try {
       const files = await fs.readdirAsync(rootpath);
-      for (let file of files) {
+      for (const file of files) {
         if (path.extname(file) === ".json") {
           const filepath = path.join(rootpath, file);
           // load workflow to array.
-          workflows[file] = JSON.parse(await fs.readFileAsync(filepath));
+          this._workflows[file] = JSON.parse(await fs.readFileAsync(filepath));
         }
       }
       this._logger.info(
@@ -51,7 +51,7 @@ module.exports = class WorkflowHandler {
         this._logger
       );
       await workflow.checkIngestValidation(job);
-      const selectedWorkflow = workflows[`${job.action}.json`];
+      const selectedWorkflow = this._workflows[`${job.action}.json`];
       // Process the frame through the selected workflow if exists.
       return selectedWorkflow
         ? await workflow.build(selectedWorkflow)
@@ -63,5 +63,9 @@ module.exports = class WorkflowHandler {
 
   workflowNotExistsError(message) {
     throw new workflowError(message);
+  }
+
+  loadWorkflow(workflow) {
+    this._workflows[`${workflow.name}.json`] = workflow;
   }
 };
