@@ -1,25 +1,35 @@
 "use strict";
 
+const logger = require("../logger/logger");
+
 const axios = require("axios").default;
 
 module.exports = class APIInvoker {
+  constructor(logger) {
+    this._logger = logger;
+  }
   async dynamicPost(reqParams, params) {
-    const elementObj = reqParams.element;
+    const elementObj = reqParams.imageMetaData;
 
     try {
       const bodyObj = this.GetParamObj(elementObj, params.data);
-
       const configRequest = {
         url: params.url,
         body: bodyObj,
       };
       const response = await axios.post(configRequest.url, configRequest.body);
-      // TODO: add logger
-      console.log("General post success for element id:%s", elementObj.id);
-      const newElement = { ...reqParams.element, ...response.data };
+      this._logger.info(
+        "[apiInvoker] dynamicPost success for element id: %s",
+        elementObj.id
+      );
+      const newElement = { ...reqParams.imageMetaData, ...response.data };
 
       return newElement;
     } catch (error) {
+      this._logger.error(
+        "[apiInvoker] dynamicPost FAILED for element id: %s",
+        elementObj.id
+      );
       throw error;
     }
   }

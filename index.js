@@ -12,6 +12,7 @@ const container = require("./containerConfig");
 const serverPort = config.get("server.port");
 const workflowHandler = container.get("workflowHandler");
 const handleError = require("./errors/handleError");
+const logger = container.get("logger");
 
 // swaggerRouter configuration
 const options = {
@@ -48,14 +49,14 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
     try {
       await workflowHandler.init();
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   })();
 
   http.createServer(app).listen(serverPort, function () {
-    console.log(`Your server is listening on port ${serverPort}`);
-    console.log(
-      `Swagger-ui is available on http://localhost:${serverPort}/docs`
+    logger.info(`[Index] - Your server is listening on port ${serverPort}`);
+    logger.info(
+      `[Index] - Swagger-ui is available on http://localhost:${serverPort}/docs`
     );
   });
 });

@@ -8,6 +8,7 @@
     "validator": {
       "workflowFields": ["name", "activities"],
       "dynamicActivityFields": ["action", "method", "additional"],
-      "dynamicActivityNameValues": ["apiInvoker"]
+      "dynamicActivityNameValues": ["apiInvoker"],
+      "ingestFields": ["imageMetaData", "action"]
     }
 }
