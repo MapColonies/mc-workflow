@@ -25,15 +25,16 @@ module.exports = class BaseWorkflow {
     try {
       this._workflow = workflow;
       this._logger.info(
-        `[BaseWorkflow] build - Building workflow ${this._workflow}`
+        `[BaseWorkflow] build - Building workflow ${this._workflow.name}`
       );
       await this.checkWorkflowValidation(this._workflow);
       const workflowOrder = jWorkflow.order(() => {}, this);
       workflow.activities.forEach((activity) => {
         workflowOrder.andThen(this.getActivity(activity), this);
+        console.log(workflowOrder);
       });
 
-      return await new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         this._logger.info(
           "[BaseWorkflow] build - Workflow prepare successfully, Starting workflow"
         ),

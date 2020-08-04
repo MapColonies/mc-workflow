@@ -16,7 +16,7 @@ exports.ingestPOST = async function (args, res, next) {
     const result = await workflowHandler.handleJobByIngestWorkflow(
       ingestedFile
     );
-    
+
     logger.info(
       `[ingestService] ingestPOST - Workflow: "${ingestedFile.action}" DONE`
     );

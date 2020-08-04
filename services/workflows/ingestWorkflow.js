@@ -3,7 +3,6 @@
 const BaseWorkflow = require("./baseWorkflow");
 const config = require("config");
 const workflowError = require("../../errors/workflowError");
-const { resolve } = require("bluebird");
 
 module.exports = class uploadWorkflow extends BaseWorkflow {
   constructor(job, apiInvoker, helper, logger) {

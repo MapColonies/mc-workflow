@@ -1,0 +1,11 @@
+{
+  "imageMetaData": {
+    "id": "1b671a64-40d5-491e-99b0-da01ff1f3341",
+    "file": "string",
+    "additionalFiles": ["string"],
+    "additionalData": {
+      "date": "2020-07-23T11:08:00.610Z"
+    }
+  },
+  "action": "create"
+}

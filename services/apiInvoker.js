@@ -13,6 +13,7 @@ module.exports = class APIInvoker {
 
     try {
       const bodyObj = this.GetParamObj(elementObj, params.data);
+
       const configRequest = {
         url: params.url,
         body: bodyObj,
@@ -22,6 +23,7 @@ module.exports = class APIInvoker {
         "[apiInvoker] dynamicPost success for element id: %s",
         elementObj.id
       );
+
       const newElement = { ...reqParams.imageMetaData, ...response.data };
 
       return newElement;
