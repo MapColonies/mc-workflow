@@ -15,28 +15,28 @@ const workflowHandler = container.get("workflowHandler");
  * no response value expected for this operation
  **/
 exports.workflowsPOST = async function (args, res, next) {
-  const incWorkflow = args;
+  const incomingWorkflow = args;
   try {
-    const jsonWorkflowData = JSON.stringify(incWorkflow);
+    const jsonWorkflowData = JSON.stringify(incomingWorkflow);
     const workflow = new ingestWorkflow({}, apiInvoker, helper);
 
-    await workflow.checkWorkflowValidation(incWorkflow);
+    await workflow.checkWorkflowValidation(incomingWorkflow);
     await DataHandlerFileSystem.writeFile(
       config.get("fileSystem.workflowsPath"),
-      incWorkflow.name,
+      incomingWorkflow.name,
       jsonWorkflowData,
       "json"
     );
 
-    workflowHandler.loadWorkflow(incWorkflow);
+    workflowHandler.loadWorkflow(incomingWorkflow);
     logger.info(
-      `[WorkflowService] workflowPOST - workflow: ${incWorkflow.name} created`
+      `[WorkflowService] workflowPOST - workflow: ${incomingWorkflow.name} created`
     );
     res.statusCode = 201;
     res.end("Created");
   } catch (error) {
     logger.error(
-      `[WorkflowService] workflowPOST - failed to create workflow: ${incWorkflow.name} - ${error}`
+      `[WorkflowService] workflowPOST - failed to create workflow: ${incomingWorkflow.name} - ${error}`
     );
     next(error);
   }
