@@ -32,7 +32,9 @@ module.exports = class DataHandlerFileSystem extends DataHandler {
 
   writeFile(filePath, fileName, data, fileExtension) {
     fs.writeFile(`${filePath}/${fileName}.${fileExtension}`, data, (err) => {
-      if (err) throw err;
+      if (err) {
+        throw err;
+      }
     });
   }
 
