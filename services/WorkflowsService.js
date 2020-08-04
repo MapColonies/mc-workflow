@@ -17,6 +17,9 @@ const workflowHandler = container.get("workflowHandler");
 exports.workflowsPOST = async function (args, res, next) {
   const incomingWorkflow = args;
   try {
+    logger.info(
+      `[WorkflowService] workflowPOST - create workflow: ${incomingWorkflow.name} in progress`
+    );
     const jsonWorkflowData = JSON.stringify(incomingWorkflow);
     const workflow = new ingestWorkflow({}, apiInvoker, helper);
 
@@ -44,10 +47,10 @@ exports.workflowsPOST = async function (args, res, next) {
 
 exports.workflowsGET = async function (args, res, next) {
   try {
+    logger.info(`[WorkflowService] workflowsGET - get workflows: ${files}`);
     const files = await DataHandlerFileSystem.getFilesFromRootPath(
       config.fileSystem.workflowsPath
     );
-    logger.info(`[WorkflowService] workflowsGET - get workflows: ${files}`);
     res.end(JSON.stringify(files));
   } catch (error) {
     logger.error(
@@ -61,6 +64,9 @@ exports.workflowsDELETE = async function (args, res, next) {
   const workflowName = args;
   const workflowsPath = config.fileSystem.workflowsPath;
   try {
+    logger.info(
+      `[WorkflowService] workflowsDELETE - delete workflow: ${workflowName} in progress`
+    );
     const fileExists = await DataHandlerFileSystem.fileExists(
       workflowsPath,
       workflowName,
