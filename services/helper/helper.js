@@ -1,23 +1,15 @@
-'use strict';
-
-const _ = require('lodash');
+"use strict";
 
 module.exports = class Helper {
-    constructor() {
-    }
 
-    objectContainsFields(obj, fields) {
-        let result = true;
-        for (let field of fields) {
-            if (!(_.has(obj, field))) {
-                result = false;
-                break
-            }
-        }
-        return result;
+  objectContainsFields(obj, fields) {
+    let result = true;
+    for (let index = 0; index < fields.length; index++) {
+      if (!obj.hasOwnProperty(fields[index])) {
+        result = false;
+        break;
+      }
     }
-
-    jsonCopy(src){
-        return JSON.parse(JSON.stringify(src));
-    }
-}
+    return result;
+  }
+};

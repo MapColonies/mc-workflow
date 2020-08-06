@@ -2,7 +2,7 @@
 
 const logger = require("../logger/logger");
 
-const axios = require("axios").default;
+const axios = require("axios");
 
 module.exports = class APIInvoker {
   constructor(logger) {

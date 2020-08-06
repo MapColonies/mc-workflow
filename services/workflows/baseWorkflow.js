@@ -31,7 +31,6 @@ module.exports = class BaseWorkflow {
       const workflowOrder = jWorkflow.order(() => {}, this);
       workflow.activities.forEach((activity) => {
         workflowOrder.andThen(this.getActivity(activity), this);
-        console.log(workflowOrder);
       });
 
       return new Promise((resolve, reject) => {
@@ -98,20 +97,15 @@ module.exports = class BaseWorkflow {
   }
 
   checkWorkflowValidation(workflow = this._workflow) {
+    const isValid = this._helper.objectContainsFields(workflow, this._validator.workflowFields);
     return new Promise((resolve, reject) => {
-      if (
-        !this._helper.objectContainsFields(
-          workflow,
-          this._validator.workflowFields
-        )
-      ) {
+      if (!isValid) {
         reject(
           new workflowError(
             `Workflow validation - missing fields in root workflow`
           )
         );
       }
-
       workflow.activities.forEach((activity) => {
         {
           if (activity.hasOwnProperty("name")) {
@@ -131,6 +125,7 @@ module.exports = class BaseWorkflow {
           }
 
           if (activity.name === this._dynamicActivity) {
+           
             let isValid = false;
             if (activity.hasOwnProperty("params")) {
               if (

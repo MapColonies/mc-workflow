@@ -4,7 +4,7 @@ const BaseWorkflow = require("./baseWorkflow");
 const config = require("config");
 const workflowError = require("../../errors/workflowError");
 
-module.exports = class uploadWorkflow extends BaseWorkflow {
+module.exports = class IngestWorkflow extends BaseWorkflow {
   constructor(job, apiInvoker, helper, logger) {
     super(helper, job, logger);
     this._job = job;
