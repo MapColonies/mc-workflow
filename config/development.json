@@ -1,14 +1,18 @@
 {
-    "server": {
-        "port": 3009
-    },
-    "fileSystem": {
-        "workflowsPath": "./workflows"
-    },
-    "validator": {
-      "workflowFields": ["name", "activities"],
-      "dynamicActivityFields": ["action", "method", "additional"],
-      "dynamicActivityNameValues": ["apiInvoker"],
-      "ingestFields": ["imageMetaData", "action"]
-    }
+  "server": {
+    "port": 3009
+  },
+  "fileSystem": {
+    "workflowsPath": "./workflows"
+  },
+  "validator": {
+    "workflowFields": ["name", "activities"],
+    "dynamicActivityFields": ["action", "method", "additional"],
+    "dynamicActivityNameValues": ["apiInvoker"],
+    "ingestFields": ["imageMetaData", "action"]
+  },
+  "logger": {
+    "level": "info",
+    "log2file": true
+  }
 }

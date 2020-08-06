@@ -1,11 +1,12 @@
 const { MCLogger } = require("@map-colonies/mc-logger");
-const service = require('../package.json');
+const service = require("../package.json");
+const config = require("config");
 
-const config = {
-  level: "info",
-  log2file: true,
+const loggerConf = {
+  level: config.get("logger.level"),
+  log2file: config.get("logger.log2file"),
 };
 
-const logger = new MCLogger(config, service);
+const logger = new MCLogger(loggerConf, service);
 
 module.exports = logger;
