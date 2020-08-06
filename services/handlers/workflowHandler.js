@@ -1,7 +1,7 @@
 const path = require("path");
 const config = require("config");
 const bluebird = require("bluebird");
-const IngestWorkflow = require("../workflows/ingestWorkflow");
+const IngestWorkflow = require("../../services/workflows/ingestWorkflow");
 const workflowError = require("../../errors/workflowError");
 const fs = bluebird.promisifyAll(require("graceful-fs"));
 const workflows = {};
@@ -41,18 +41,13 @@ module.exports = class WorkflowHandler {
       );
     }
   }
-
+  
   async handleJobByIngestWorkflow(job) {
     try {
-      const workflow = new IngestWorkflow(
-        job,
-        this._apiInvoker,
-        this._helper,
-        this._logger
-      );
+      const workflow = new IngestWorkflow(job, this._apiInvoker, this._helper, this._logger);
       await workflow.checkIngestValidation(job);
       const selectedWorkflow = this._workflows[`${job.action}.json`];
-      // Process the frame through the selected workflow if exists.
+      // Process the data through the selected workflow if exists.
       return selectedWorkflow
         ? await workflow.build(selectedWorkflow)
         : this.workflowNotExistsError(`workflow is not exists`);

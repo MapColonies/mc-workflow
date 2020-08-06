@@ -11,7 +11,10 @@
         "action": "apiInvoker",
         "method": "dynamicPost",
         "description": "Database-storage",
-        "additional": { "data": ["*"], "url": "http://localhost:3002/images" }
+        "additional": {
+          "data": ["*"],
+          "url": "http://localhost:3002/images"
+        }
       }
     }
   ]
