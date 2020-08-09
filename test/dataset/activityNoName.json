@@ -1,0 +1,20 @@
+{
+    "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+    "name": "create",
+    "activities": [
+      { "notExists": "backupMetadata", "wait": true, "dropOnError": false },
+      {
+        "name": "dynamicActivity",
+        "wait": true,
+        "dropOnError": true,
+        "params": {
+          "notExists": "apiInvoker",
+          "method": "dynamicPost",
+          "description": "Database-storage",
+          "additional": { "data": ["*"], "url": "http://localhost:3002/images" }
+        }
+      }
+    ]
+  }
+  
+  

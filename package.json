@@ -1,0 +1,35 @@
+{
+  "name": "workflow",
+  "version": "1.0.0",
+  "description": "api  for workflow service",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm install",
+    "start": "node index.js",
+    "test": "mocha -- ./test/**/*.spec.js"
+  },
+  "keywords": [
+    "swagger"
+  ],
+  "license": "Unlicense",
+  "private": true,
+  "dependencies": {
+    "@map-colonies/mc-logger": "^1.1.0",
+    "axios": "^0.19.2",
+    "bluebird": "^3.7.2",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "config": "^3.3.1",
+    "connect": "^3.2.0",
+    "fs": "0.0.1-security",
+    "graceful-fs": "^4.2.4",
+    "jWorkflow": "^0.9.0",
+    "js-yaml": "^3.3.0",
+    "kontainer-di": "^0.9.9",
+    "mocha": "^8.1.0",
+    "sinon": "^9.0.2",
+    "sinon-chai": "^3.5.0",
+    "swagger-tools": "0.10.1"
+  }
+}
+
