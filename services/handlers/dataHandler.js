@@ -7,3 +7,4 @@ module.exports = class DataHandler {
     readStream(location, streamChunkSize) {
     }
 }
+

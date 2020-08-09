@@ -4,3 +4,4 @@ module.exports = class workflowError extends Error {
     this.name = "workflowError";
   }
 };
+

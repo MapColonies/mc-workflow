@@ -96,44 +96,37 @@ module.exports = class BaseWorkflow {
     };
   }
 
-  checkWorkflowValidation(workflow = this._workflow) {
-    const isValid = this._helper.objectContainsFields(workflow, this._validator.workflowFields);
-    return new Promise((resolve, reject) => {
-      if (!isValid) {
-        reject(
-          new workflowError(
-            `Workflow validation - missing fields in root workflow`
-          )
-        );
+  checkWorkflowValidation = async (workflow) => {
+    try {
+      const missingField = this._helper.objectContainsFields(
+        workflow,
+        this._validator.workflowFields
+      );
+      if (missingField !== undefined) {
+        throw new workflowError(`workflow is missing field: ${missingField}`);
       }
       workflow.activities.forEach((activity) => {
         {
           if (activity.hasOwnProperty("name")) {
             if (typeof this[activity.name] !== typeof (() => {})) {
-              reject(
-                new workflowError(
-                  `Workflow validation - There is no activity for ${activity.name}`
-                )
+              throw new workflowError(
+                `Workflow validation - There is no activity for ${activity.name}`
               );
             }
           } else {
-            reject(
-              new workflowError(
-                `Workflow validation - activity in ${workflow.name} workflow has no name`
-              )
+            throw new workflowError(
+              `Workflow validation - activity in ${workflow.name} workflow has no name`
             );
           }
 
           if (activity.name === this._dynamicActivity) {
-           
             let isValid = false;
+            const missingField = this._helper.objectContainsFields(
+              activity.params,
+              this._validator.dynamicActivityFields
+            );
             if (activity.hasOwnProperty("params")) {
-              if (
-                this._helper.objectContainsFields(
-                  activity.params,
-                  this._validator.dynamicActivityFields
-                )
-              ) {
+              if (missingField === undefined) {
                 if (
                   this._validator.dynamicActivityNameValues.indexOf(
                     activity.params.action
@@ -143,19 +136,18 @@ module.exports = class BaseWorkflow {
                 }
               }
             }
-            if (!isValid) {
-              reject(
-                new workflowError(
-                  `Workflow validation - dynamic activity missing fields`
-                )
+            if (missingField !== undefined) {
+              throw new workflowError(
+                `Workflow validation - dynamic activity missing fields: ${missingField}`
               );
             }
           }
         }
       });
-      resolve();
-    });
-  }
+    } catch (error) {
+      throw error;
+    }
+  };
 
   async waitTrueTemplate(baton, template, dropOnError = true) {
     try {
@@ -182,3 +174,4 @@ module.exports = class BaseWorkflow {
     }
   }
 };
+

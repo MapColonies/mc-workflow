@@ -91,3 +91,4 @@ context("dynamicPost", function () {
     await apiInvoker.dynamicPost(mockReqParams, mockParams).should.rejected;
   });
 });
+

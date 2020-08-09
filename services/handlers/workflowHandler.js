@@ -64,3 +64,4 @@ module.exports = class WorkflowHandler {
     this._workflows[`${workflow.name}.json`] = workflow;
   }
 };
+

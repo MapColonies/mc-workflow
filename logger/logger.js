@@ -10,3 +10,4 @@ const loggerConf = {
 const logger = new MCLogger(loggerConf, service);
 
 module.exports = logger;
+

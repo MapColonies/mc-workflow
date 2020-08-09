@@ -13,3 +13,4 @@ module.exports.workflowsPOST = function workflowsPOST(req, res, next) {
 module.exports.workflowsDELETE = function workflowsDELETE(req, res, next) {
   Workflows.workflowsDELETE(req.swagger.params["workflowName"].value, res, next);
 };
+
