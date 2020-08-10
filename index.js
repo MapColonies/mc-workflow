@@ -13,6 +13,7 @@ const serverPort = config.get("server.port");
 const workflowHandler = container.get("workflowHandler");
 const handleError = require("./errors/handleError");
 const logger = container.get("logger");
+const { Probe } = require('@map-colonies/mc-probe');
 
 // swaggerRouter configuration
 const options = {
@@ -53,11 +54,14 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
     }
   })();
 
-  http.createServer(app).listen(serverPort, function () {
-    logger.info(`[Index] - Your server is listening on port ${serverPort}`);
-    logger.info(
-      `[Index] - Swagger-ui is available on http://localhost:${serverPort}/docs`
-    );
-  });
+  const probConfig = {};
+  const probe = new Probe(logger, probConfig);
+  probe
+    .start(app, config.get("server.port"))
+    .then(() => {
+      probe.readyFlag = true;
+    })
+    .catch(() => {
+      probe.liveFlag = false;
+    });
 });
-
