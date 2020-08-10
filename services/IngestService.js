@@ -11,8 +11,8 @@ const logger = container.get("logger");
  * no response value expected for this operation
  **/
 exports.ingestPOST = async function (args, res, next) {
+  const ingestedFile = args;
   try {
-    const ingestedFile = args;
     const result = await workflowHandler.handleJobByIngestWorkflow(
       ingestedFile
     );
@@ -25,7 +25,7 @@ exports.ingestPOST = async function (args, res, next) {
     res.end(JSON.stringify(result));
   } catch (error) {
     logger.error(
-      `[ingestService] ingestPOST - Workflow FAILED - Error: ${error.message} `
+      `[ingestService] ingestPOST - Workflow: "${ingestedFile.action}" FAILED - Error: ${error.message} `
     );
     next(error);
   }
