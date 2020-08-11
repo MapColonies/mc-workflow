@@ -53,7 +53,7 @@ describe("ingestWorkflow functionality", function () {
       await ingestWorkflow
         .checkIngestValidation(missingField)
         .should.rejectedWith(
-          `Ingest validation - missing fields in root ingest json: "${missingField}"`
+          `Ingest validation - missing field: "${missingField}" in root ingest json`
         );
     });
   });

@@ -44,7 +44,7 @@ module.exports = class IngestWorkflow extends BaseWorkflow {
       if (missingField !== undefined) {
         reject(
           new workflowError(
-            `Ingest validation - missing fields in root ingest json: "${missingField}"`
+            `Ingest validation - missing field: "${missingField}" in root ingest json`
           )
         );
       }

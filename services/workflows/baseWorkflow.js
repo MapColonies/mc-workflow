@@ -48,7 +48,7 @@ module.exports = class BaseWorkflow {
       });
     } catch (err) {
       this._logger.error(
-        `[BaseWorkflow] build - Error while building activities in workflow: "${this._workflow.name}": ${err}`
+        `[BaseWorkflow] build - Error in "${this._workflow.name}" building activities : ${err}`
       );
       throw err;
     }
@@ -111,7 +111,7 @@ module.exports = class BaseWorkflow {
           if (activity.hasOwnProperty("name")) {
             if (typeof this[activity.name] !== typeof (() => {})) {
               throw new workflowError(
-                `Workflow validation - There is no activity for "${activity.name}"`
+                `Workflow validation - There is no activity for "${activity.name}" in workflow "workflow: ${workflow.name}"`
               );
             }
           } else {
@@ -139,7 +139,7 @@ module.exports = class BaseWorkflow {
             }
             if (missingField !== undefined) {
               throw new workflowError(
-                `Workflow validation - dynamic activity missing fields: "${missingField}"`
+                `Workflow validation - dynamic activity missing fields: "${missingField}" in workflow "${workflow.name}"`
               );
             }
           }
@@ -158,7 +158,7 @@ module.exports = class BaseWorkflow {
     } catch (err) {
       err.ActivityName = template.fname;
       this._logger.error(
-        `[BaseWorkFlow] - Error in workflow : "${err.ActivityName}". ${err.message}`
+        `[BaseWorkFlow] - Error in workflow "${this._workflow.name}" : ${err.ActivityName} ${err.message}`
       );
       dropOnError ? baton.drop(err) : baton.pass();
     }
@@ -170,7 +170,7 @@ module.exports = class BaseWorkflow {
     } catch (err) {
       err.ActivityName = template.fname;
       this._logger.error(
-        `[BaseWorkFlow] - Error in workflow : "${err.ActivityName}". ${err.message}`
+        `[BaseWorkFlow] - Error in workflow "${this._workflow.name}": ${err.ActivityName} ${err.message}`
       );
     }
   }
