@@ -31,7 +31,7 @@ module.exports = class BaseWorkflow {
       workflow.activities.forEach((activity) => {
         workflowOrder.andThen(this.getActivity(activity), this);
       });
-      
+
       return new Promise((resolve, reject) => {
         this._logger.info(
           `[BaseWorkflow] build - Workflow prepare successfully, Starting workflow "${this._workflow.name}"`
@@ -102,7 +102,9 @@ module.exports = class BaseWorkflow {
         this._validator.workflowFields
       );
       if (missingField !== undefined) {
-        throw new workflowError(`workflow "${workflow.name}" is missing field: "${missingField}"`);
+        throw new workflowError(
+          `workflow "${workflow.name}" is missing field: "${missingField}"`
+        );
       }
       workflow.activities.forEach((activity) => {
         {
