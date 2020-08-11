@@ -99,9 +99,13 @@ module.exports = class BaseWorkflow {
         this._validator.workflowFields
       );
       if (missingField !== undefined) {
+<<<<<<< HEAD
         throw new workflowError(
           `workflow "${workflow.name}" is missing field: "${missingField}"`
         );
+=======
+        throw new workflowError(`workflow "${workflow.name}" is missing field: "${missingField}"`);
+>>>>>>> 08ebc9cd24960c3572c72b52a5d03c420e56c548
       }
       workflow.activities.forEach((activity) => {
         {
