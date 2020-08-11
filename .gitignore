@@ -2,7 +2,7 @@
 config/**
 confd/**
 !confd/*.js
-!confd/*.tmpl
+!confd/production.tmpl
 !confd/*.toml
 
 #IDE
