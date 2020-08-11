@@ -13,8 +13,9 @@ module.exports = class IngestWorkflow extends BaseWorkflow {
     this._returnValue = this._job;
     this.logger = logger;
     this._ingestValidator = {
-      ...this._validator, ingestFields: config.get('validator.ingestFields')
-    }
+      ...this._validator,
+      ingestFields: config.get("validator.ingestFields"),
+    };
   }
 
   get upload() {
@@ -36,12 +37,14 @@ module.exports = class IngestWorkflow extends BaseWorkflow {
 
   checkIngestValidation(job = this.job) {
     return new Promise((resolve, reject) => {
-      if (
-        !this._helper.objectContainsFields(job, this._ingestValidator.ingestFields)
-      ) {
+      const missingField = this._helper.objectContainsFields(
+        job,
+        this._ingestValidator.ingestFields
+      );
+      if (missingField !== undefined) {
         reject(
           new workflowError(
-            `Ingest validation - missing fields in root workflow`
+            `Ingest validation - missing fields in root ingest json: "${missingField}"`
           )
         );
       }
@@ -49,4 +52,3 @@ module.exports = class IngestWorkflow extends BaseWorkflow {
     });
   }
 };
-

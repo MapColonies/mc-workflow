@@ -25,7 +25,7 @@ describe("helper functionality", function () {
         helper = new Helper();
         const mockWorkflowObject = require("../../dataset/create.json");
         const mockFields = ["name", "activities"];
-        const result = helper.objectContainsFields(mockWorkflowObject,mockFields);
+        const result = helper.objectContainsFields(mockWorkflowObject, mockFields);
         expect(result).to.be.undefined;
       });
   });

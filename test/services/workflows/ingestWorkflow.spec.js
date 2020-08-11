@@ -46,7 +46,7 @@ describe("ingestWorkflow functionality", function () {
       await ingestWorkflow
         .checkIngestValidation(missingField)
         .should.rejectedWith(
-          `Ingest validation - missing fields in root workflow: ${missingField}`
+          `Ingest validation - missing fields in root ingest json: "${missingField}"`
         );
     });
   });
@@ -128,7 +128,7 @@ describe("ingestWorkflow functionality", function () {
       await workflow
         .checkWorkflowValidation(mockMissingActivity)
         .should.be.rejectedWith(
-          `Workflow validation - There is no activity for ${mockMissingActivity.activities[2].name}`
+          `Workflow validation - There is no activity for "${mockMissingActivity.activities[2].name}"`
         );
     });
     it("Should return invalid workflow because dynamic activity field 'action' is not exist", async function () {
@@ -138,7 +138,7 @@ describe("ingestWorkflow functionality", function () {
       await workflow
         .checkWorkflowValidation(missingDynamicActivityAction)
         .should.be.rejectedWith(
-          `workflow is missing field: ${missingDynamicActivity}`
+          `workflow is missing field: "${missingDynamicActivity}"`
         );
     });
     it("Should return invalid workflow because dynamic activity name is not exist", async function () {
@@ -147,7 +147,7 @@ describe("ingestWorkflow functionality", function () {
       await workflow
         .checkWorkflowValidation(activityNoName)
         .should.be.rejectedWith(
-          `Workflow validation - activity in ${activityNoName.name} workflow has no name`
+          `Workflow validation - activity in "${activityNoName.name}" workflow has no name`
         );
     });
   });

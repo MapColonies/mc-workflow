@@ -25,7 +25,7 @@ module.exports = class BaseWorkflow {
     try {
       this._workflow = workflow;
       this._logger.info(
-        `[BaseWorkflow] build - Building workflow ${this._workflow.name}`
+        `[BaseWorkflow] build - Building workflow "${this._workflow.name}"`
       );
       await this.checkWorkflowValidation(this._workflow);
       const workflowOrder = jWorkflow.order(() => {}, this);
@@ -97,19 +97,19 @@ module.exports = class BaseWorkflow {
         this._validator.workflowFields
       );
       if (missingField !== undefined) {
-        throw new workflowError(`workflow is missing field: ${missingField}`);
+        throw new workflowError(`workflow is missing field: "${missingField}"`);
       }
       workflow.activities.forEach((activity) => {
         {
           if (activity.hasOwnProperty("name")) {
             if (typeof this[activity.name] !== typeof (() => {})) {
               throw new workflowError(
-                `Workflow validation - There is no activity for ${activity.name}`
+                `Workflow validation - There is no activity for "${activity.name}"`
               );
             }
           } else {
             throw new workflowError(
-              `Workflow validation - activity in ${workflow.name} workflow has no name`
+              `Workflow validation - activity in "${workflow.name}" workflow has no name`
             );
           }
 
@@ -132,7 +132,7 @@ module.exports = class BaseWorkflow {
             }
             if (missingField !== undefined) {
               throw new workflowError(
-                `Workflow validation - dynamic activity missing fields: ${missingField}`
+                `Workflow validation - dynamic activity missing fields: "${missingField}"`
               );
             }
           }
@@ -151,7 +151,7 @@ module.exports = class BaseWorkflow {
     } catch (err) {
       err.ActivityName = template.fname;
       this._logger.error(
-        `[BaseWorkFlow] - Error in workflow : ${err.ActivityName} ${err.message}`
+        `[BaseWorkFlow] - Error in workflow : "${err.ActivityName}". ${err.message}`
       );
       dropOnError ? baton.drop(err) : baton.pass();
     }
@@ -163,7 +163,7 @@ module.exports = class BaseWorkflow {
     } catch (err) {
       err.ActivityName = template.fname;
       this._logger.error(
-        `[BaseWorkFlow] - Error in workflow : ${err.ActivityName} ${err.message}`
+        `[BaseWorkFlow] - Error in workflow : "${err.ActivityName}". ${err.message}`
       );
     }
   }
