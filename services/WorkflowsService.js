@@ -65,7 +65,7 @@ exports.workflowsDELETE = async function (args, res, next) {
   const workflowsPath = config.fileSystem.workflowsPath;
   try {
     logger.info(
-      `[WorkflowService] workflowsDELETE - delete workflow: ${workflowName} in progress`
+      `[WorkflowService] workflowsDELETE - delete workflow: "${workflowName}" in progress`
     );
     const fileExists = await DataHandlerFileSystem.fileExists(
       workflowsPath,
@@ -81,13 +81,13 @@ exports.workflowsDELETE = async function (args, res, next) {
       : res.end("Not found");
 
     logger.info(
-      `[WorkflowService] workflowsDELETE - workflow: ${workflowName} deleted`
+      `[WorkflowService] workflowsDELETE - workflow: "${workflowName}" deleted`
     );
     res.statusCode = 202;
     res.end("Deleted");
   } catch (error) {
     logger.info(
-      `[WorkflowService] workflowsDELETE - workflow: ${workflowName} failed to delete - ${error}`
+      `[WorkflowService] workflowsDELETE - workflow: "${workflowName}" failed to delete - ${error}`
     );
     next(error);
   }
