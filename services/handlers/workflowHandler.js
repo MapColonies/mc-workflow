@@ -33,11 +33,11 @@ module.exports = class WorkflowHandler {
         }
       }
       this._logger.info(
-        `[workflowHandler] configureAsync - Done load workflow from ${rootpath}`
+        `[workflowHandler] configureAsync - Done load workflows from ${rootpath}`
       );
     } catch (err) {
       this._logger.error(
-        `[workflowHandler] configureAsync - Failed load workflow - ${err}`
+        `[workflowHandler] configureAsync - Failed load workflows from ${rootpath} - ${err}`
       );
     }
   }

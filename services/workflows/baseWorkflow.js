@@ -1,7 +1,6 @@
 "use strict";
 
 const workflowError = require("../../errors/workflowError");
-const container = require("../../containerConfig");
 const jWorkflow = require("jWorkflow");
 const config = require("config");
 
@@ -32,6 +31,9 @@ module.exports = class BaseWorkflow {
       workflow.activities.forEach((activity) => {
         workflowOrder.andThen(this.getActivity(activity), this);
       });
+      this._logger.info(
+        `[BaseWorkflow] build - prepared successfully, Starting workflow: ${this._workflow.name}`
+      );
       return await workflowOrder.start({
         callback: (result) => {
           if (result instanceof Error) {
@@ -43,7 +45,7 @@ module.exports = class BaseWorkflow {
       });
     } catch (err) {
       this._logger.error(
-        `[BaseWorkflow] build - Error in building activities : ${err}`
+        `[BaseWorkflow] build - Error while building activities in workflow: "${this._workflow.name}": ${err}`
       );
       throw err;
     }
@@ -97,7 +99,9 @@ module.exports = class BaseWorkflow {
         this._validator.workflowFields
       );
       if (missingField !== undefined) {
-        throw new workflowError(`workflow is missing field: "${missingField}"`);
+        throw new workflowError(
+          `workflow "${workflow.name}" is missing field: "${missingField}"`
+        );
       }
       workflow.activities.forEach((activity) => {
         {
@@ -168,4 +172,3 @@ module.exports = class BaseWorkflow {
     }
   }
 };
-
