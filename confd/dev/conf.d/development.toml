@@ -1,0 +1,13 @@
+[template]
+src = "production.tmpl"
+dest = "config/default.json"
+keys = [
+    "/configuration/server/port",
+    "/configuration/fileSystem/workflowsPath",
+    "/configuration/validator/workflowFields",
+    "/configuration/validator/dynamicActivityFields",
+    "/configuration/validator/dynamicActivityNameValues",
+    "/configuration/validator/ingestFields",
+    "/configuration/logger/level",
+    "/configuration/logger/log2file"
+]
