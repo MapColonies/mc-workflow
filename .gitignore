@@ -3,7 +3,7 @@ config/**
 confd/**
 !confd/*.js
 !confd/production.tmpl
-!confd/*.toml
+!confd/production.toml
 
 #IDE
 .vscode
