@@ -31,17 +31,20 @@ module.exports = class BaseWorkflow {
       workflow.activities.forEach((activity) => {
         workflowOrder.andThen(this.getActivity(activity), this);
       });
-      this._logger.info(
-        `[BaseWorkflow] build - prepared successfully, Starting workflow: ${this._workflow.name}`
-      );
-      return await workflowOrder.start({
-        callback: (result) => {
-          if (result instanceof Error) {
-            return result;
-          }
-          return this._returnValue;
-        },
-        initialValue: "",
+      
+      return new Promise((resolve, reject) => {
+        this._logger.info(
+          `[BaseWorkflow] build - Workflow prepare successfully, Starting workflow "${this._workflow.name}"`
+        ),
+          workflowOrder.start({
+            callback: (result) => {
+              if (result instanceof Error) {
+                return reject(result);
+              }
+              return resolve(this._returnValue);
+            },
+            initialValue: "",
+          });
       });
     } catch (err) {
       this._logger.error(
