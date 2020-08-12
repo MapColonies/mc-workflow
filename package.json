@@ -6,7 +6,8 @@
   "scripts": {
     "prestart": "npm install",
     "start": "node index.js",
-    "test": "mocha -- ./test/**/*.spec.js"
+    "test": "mocha -- ./test/**/*.spec.js",
+    "generate_config": "node confd/generate-config.js"
   },
   "keywords": [
     "swagger"
