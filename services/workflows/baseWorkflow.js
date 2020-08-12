@@ -1,7 +1,6 @@
 "use strict";
 
 const workflowError = require("../../errors/workflowError");
-const container = require("../../containerConfig");
 const jWorkflow = require("jWorkflow");
 const config = require("config");
 
@@ -103,7 +102,9 @@ module.exports = class BaseWorkflow {
         this._validator.workflowFields
       );
       if (missingField !== undefined) {
-        throw new workflowError(`workflow is missing field: "${missingField}"`);
+        throw new workflowError(
+          `workflow "${workflow.name}" is missing field: "${missingField}"`
+        );
       }
       workflow.activities.forEach((activity) => {
         {
@@ -174,4 +175,3 @@ module.exports = class BaseWorkflow {
     }
   }
 };
-

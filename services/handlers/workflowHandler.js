@@ -20,7 +20,7 @@ module.exports = class WorkflowHandler {
       throw err;
     }
   }
-
+  
   async configureAsync() {
     const rootpath = path.resolve(config.fileSystem.workflowsPath);
     try {
@@ -33,11 +33,11 @@ module.exports = class WorkflowHandler {
         }
       }
       this._logger.info(
-        `[workflowHandler] configureAsync - Done load workflow from ${rootpath}`
+        `[workflowHandler] configureAsync - Done load workflows from ${rootpath}`
       );
     } catch (err) {
       this._logger.error(
-        `[workflowHandler] configureAsync - Failed load workflow - ${err}`
+        `[workflowHandler] configureAsync - Failed load workflows from ${rootpath} - ${err}`
       );
     }
   }
@@ -50,7 +50,7 @@ module.exports = class WorkflowHandler {
       // Process the data through the selected workflow if exists.
       return selectedWorkflow
         ? await workflow.build(selectedWorkflow)
-        : this.workflowNotExistsError(`workflow is not exists`);
+        : this.workflowNotExistsError(`workflow "${job.action}" is not exists`);
     } catch (err) {
       throw err;
     }

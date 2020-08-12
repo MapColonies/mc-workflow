@@ -18,14 +18,14 @@ exports.ingestPOST = async function (args, res, next) {
     );
 
     logger.info(
-      `[ingestService] ingestPOST - Workflow: "${ingestedFile.action}" DONE`
+      `[ingestService] ingestPOST - Workflow: "${ingestedFile.action}" is DONE`
     );
 
     res.statusCode = 200;
     res.end(JSON.stringify(result));
   } catch (error) {
     logger.error(
-      `[ingestService] ingestPOST - Workflow: "${ingestedFile.action}" FAILED - Error: ${error.message} `
+      `[ingestService] ingestPOST - Workflow "${ingestedFile.action}" is FAILED - Error: ${error.message} `
     );
     next(error);
   }

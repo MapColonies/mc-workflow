@@ -1,45 +1,59 @@
-// const chai = require("chai");
-// const sinon = require("sinon");
-// const sinonChai = require("sinon-chai");
-// const chaiAsPromised = require("chai-as-promised");
-// const expect = chai.expect;
-// const IngestWorkflow = require("../../../services/workflows/ingestWorkflow");
-// const WorkflowHandler = require("../../../services/handlers/workflowHandler");
+const chai = require("chai");
+const sinon = require("sinon");
+const sinonChai = require("sinon-chai");
+const chaiAsPromised = require("chai-as-promised");
+const IngestWorkflow = require("../../../services/workflows/ingestWorkflow");
+const WorkflowHandler = require("../../../services/handlers/workflowHandler");
 
+chai.use(sinonChai);
+chai.use(chaiAsPromised);
+chai.should();
 
-// chai.use(sinonChai);
-// chai.use(chaiAsPromised);
-// chai.should();
+const mockLogger = {};
+const mockHelper = {};
+const mockApiInvoker = {};
 
-// const mockLogger = {};
-// const mockHelper = {};
-// const mockApiInvoker = {};
+describe("workflowHandler functionality", function () {
+  let workflowHandler;
+  let ingestValidationStub;
 
-// describe("workflowHandler functionality", function () {
-//   let workflowHandler;
-//   let ingestValidationStub;
-//   let ingestWorkflowStub;
+  const mockJob = require("../../dataset/ingest.json");
 
-//   const mockJob = require('../../dataset/ingest.json')
+  context("handleJobByIngestWorkflow", function () {
+    mockWorkflow = require("../../dataset/create.json");
 
-//   context("handleJobByIngestWorkflow", function () {
-//     beforeEach(function () {
-//         // ingestValidationStub = sinon.stub(IngestWorkflow.prototype, "checkIngestValidation").callsFake(()=> 1);
-//         workflowHandler = new WorkflowHandler(mockApiInvoker, mockHelper, mockLogger);
+    beforeEach(function () {
+      ingestValidationStub = sinon.stub(
+        IngestWorkflow.prototype,
+        "checkIngestValidation"
+      );
+      buildStub = sinon.stub(IngestWorkflow.prototype, "build");
 
+      workflowHandler = new WorkflowHandler(
+        mockApiInvoker,
+        mockHelper,
+        mockLogger
+      );
+    });
 
-//     });
-//     afterEach(function(){
-//         // ingestValidationStub.restore();
+    afterEach(function () {
+      ingestValidationStub.restore();
+      buildStub.restore();
+    });
 
-//     })
-//     it("Should process the file through the selected workflow if exists",async function () { 
-        
-//         // ingestWorkflowStub = sinon.stub(sinon.createStubInstance(IngestWorkflow)).should.be.calledWithNew;
-//         const result = await workflowHandler.handleJobByIngestWorkflow(mockJob);
-//         console.log(result);
+    it("Should process the file through the selected workflow if exists", async function () {
+      workflowHandler.loadWorkflow(mockWorkflow);
+      await workflowHandler.handleJobByIngestWorkflow(mockJob).should.be.fulfilled;
+      ingestValidationStub.should.calledOnce;
+      buildStub.should.calledOnce;
+    });
 
-//     });
-//   });
-// });
-
+    it("Should throw an error by pass not exists workflow", async function () {
+      workflowHandler.loadWorkflow(mockWorkflow);
+      mockJob.action = "notExists";
+      await workflowHandler.handleJobByIngestWorkflow(mockJob).should.be.rejectedWith(`workflow "${mockJob.action}" is not exists`);
+      ingestValidationStub.should.calledOnce;
+      buildStub.should.not.called;
+    });
+  });
+});

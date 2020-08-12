@@ -15,20 +15,25 @@ chai.should();
 describe("apiInvoker functionality", function () {
   let apiInvoker;
   const ingestMock = require("../dataset/ingest.json");
+
   context("GetParamObj", function () {
+
     beforeEach(function () {
       apiInvoker = new APIInvoker(mockLogger);
       mockLogger.log = sinon.stub(logger, "log");
     });
+
     afterEach(function () {
       mockLogger.log.restore();
     });
+
     it("Should return all params from object without reject", function () {
       const result = apiInvoker.GetParamObj(ingestMock.imageMetaData, ["*"]);
 
       result.should.to.be.a("object");
       result.should.to.eql(ingestMock.imageMetaData);
     });
+
     it("Should return specific params from object without reject", function () {
       const result = apiInvoker.GetParamObj(ingestMock.imageMetaData, [
         "id",
@@ -41,16 +46,21 @@ describe("apiInvoker functionality", function () {
       result.should.be.a("object");
       result.should.to.eql(expectedResult);
     });
+
     it("Should return undefined by pass incorrect params", function () {
       const result = apiInvoker.GetParamObj(
         ingestMock.imageMetaData,
         undefined
         );
+
         expect(result).to.be.undefined;
     });
   });
 });
+
 context("dynamicPost", function () {
+  const mockReqParams = require("../dataset/ingest.json");
+  const mockParams = require("../dataset/paramsMock.json");
   const axiosStub = {};
 
   beforeEach(function () {
@@ -60,19 +70,21 @@ context("dynamicPost", function () {
     mockLogger.info = sinon.stub(logger, "info");
     axiosStub.post = sinon.stub(axios, "post");
   });
+
   afterEach(function () {
     mockLogger.log.restore();
     mockLogger.info.restore();
     mockLogger.error.restore();
     axiosStub.post.restore();
   });
-  const mockReqParams = require("../dataset/ingest.json");
-  const mockParams = require("../dataset/paramsMock.json");
+
+
   it("Should return object with correct response fields", async function () {
     const mockAxiosResponse = { data: { statusCode: 200, success: "OK" } };
     axiosStub.post.resolves(mockAxiosResponse);
 
     const result = await apiInvoker.dynamicPost(mockReqParams, mockParams);
+    
     const expectedResult = {
       ...mockReqParams.imageMetaData,
       ...mockAxiosResponse.data,
@@ -86,8 +98,10 @@ context("dynamicPost", function () {
       mockReqParams.imageMetaData
     );
   });
+
   it("Should not complete and reject by axios post", async function () {
     axiosStub.post.rejects();
+
     await apiInvoker.dynamicPost(mockReqParams, mockParams).should.rejected;
   });
 });
