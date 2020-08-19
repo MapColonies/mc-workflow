@@ -47,10 +47,10 @@ exports.workflowsPOST = async function (args, res, next) {
 
 exports.workflowsGET = async function (args, res, next) {
   try {
-    logger.info(`[WorkflowService] workflowsGET - get workflows: ${files}`);
     const files = await DataHandlerFileSystem.getFilesFromRootPath(
       config.fileSystem.workflowsPath
-    );
+      );
+      logger.info(`[WorkflowService] workflowsGET - workflows: ${files}`);
     res.end(JSON.stringify(files));
   } catch (error) {
     logger.error(

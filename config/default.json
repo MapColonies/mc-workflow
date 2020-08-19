@@ -1,6 +1,6 @@
 {
     "server": {
-        "port": 3000
+        "port": 3009
     },
     "fileSystem": {
         "workflowsPath": "./workflows"
@@ -9,7 +9,7 @@
         "workflowFields": ["name", "activities"],
         "dynamicActivityFields": ["action", "method", "additional"],
         "dynamicActivityNameValues": ["dynamicActivityNameValues"],
-        "ingestFields": ["apiInvoker"]
+        "ingestFields": ["imageMetaData", "action"]
     },
     "logger": {
         "level": "info",
