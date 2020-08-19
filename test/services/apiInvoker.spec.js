@@ -47,7 +47,7 @@ describe("apiInvoker functionality", function () {
       result.should.to.eql(expectedResult);
     });
 
-    it("Should return undefined by pass incorrect params", function () {
+    it("Should return undefined when received undefined params", function () {
       const result = apiInvoker.GetParamObj(
         ingestMock.imageMetaData,
         undefined
@@ -77,7 +77,6 @@ context("dynamicPost", function () {
     mockLogger.error.restore();
     axiosStub.post.restore();
   });
-
 
   it("Should return object with correct response fields", async function () {
     const mockAxiosResponse = { data: { statusCode: 200, success: "OK" } };
