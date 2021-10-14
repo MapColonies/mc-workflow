@@ -1,4 +1,4 @@
-FROM node:12.18.1-alpine3.11 as production
+FROM node:12-alpine3.11 as production
 WORKDIR /usr/src/app
 COPY package*.json ./
 COPY ./run.sh ./run.sh
