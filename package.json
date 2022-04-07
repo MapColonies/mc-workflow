@@ -15,7 +15,7 @@
   "license": "Unlicense",
   "private": true,
   "dependencies": {
-    "@map-colonies/mc-logger": "^1.1.0",
+    "@map-colonies/mc-logger": "^2.0.0",
     "@map-colonies/mc-probe": "^1.0.0",
     "axios": "^0.19.2",
     "bluebird": "^3.7.2",
